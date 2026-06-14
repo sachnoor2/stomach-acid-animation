@@ -1,0 +1,58 @@
+name: Render Video (LFS F5-TTS)
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2 libpangocairo-1.0-0 libpango-1.0-0 git-lfs
+
+      - name: Clone Hindi TTS Model (LFS)
+        run: |
+          git lfs install
+          git clone --depth 1 https://github.com/sachnoor2/Hindi-TTS.git tts-model
+          cd tts-model
+          git lfs pull
+
+      - name: Install TTS & Remotion Deps
+        run: |
+          pip install f5-tts torch torchaudio
+          echo '{"dependencies": {"remotion": "4.0.12", "react": "18.2.0", "react-dom": "18.2.0", "@remotion/cli": "4.0.12", "lucide-react": "0.284.0"}}' > package.json
+          npm install
+
+      - name: Download Animation Code
+        run: |
+          mkdir -p src public
+          curl -L -o src/StomachAcid_VIRAL.tsx https://share.zapia.com/j8rm6urw29jbvf07v2piui
+          echo "import React from 'react'; import { Composition } from 'remotion'; import { StomachAcidViral } from './StomachAcid_VIRAL'; export const RemotionRoot: React.FC = () => { return ( <Composition id='StomachAcid' component={StomachAcidViral} durationInFrames={2400} fps={60} width={1080} height={1920} /> ); };" > src/Root.tsx
+
+      - name: Generate Audio (F5-TTS)
+        run: python3 scripts/generate_audio_f5.py
+
+      - name: Render Video
+        run: npx remotion render StomachAcid out/video.mp4 --overwrite
+
+      - name: Upload Video
+        uses: actions/upload-artifact@v4
+        with:
+          name: video
+          path: out/video.mp4
