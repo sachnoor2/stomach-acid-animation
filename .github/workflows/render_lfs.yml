@@ -24,7 +24,7 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg libnss3 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libpangocairo-1.0-0 libpango-1.0-0 git-lfs
+          sudo apt-get install -y ffmpeg libnss3 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libpangocairo-1.0-0 libpango-1.0-0 git-lfs chromium-browser
 
       - name: Clone Hindi TTS Model (LFS)
         run: |
