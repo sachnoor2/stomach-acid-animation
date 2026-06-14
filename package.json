@@ -1,0 +1,19 @@
+{
+  "name": "remotion-video",
+  "version": "1.0.0",
+  "description": "Remotion video project",
+  "scripts": {
+    "render": "remotion render StomachAcid out/video.mp4",
+    "start": "remotion preview"
+  },
+  "dependencies": {
+    "remotion": "^4.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "@lucide-react": "^0.284.0"
+  },
+  "devDependencies": {
+    "@remotion/cli": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}
