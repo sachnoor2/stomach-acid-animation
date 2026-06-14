@@ -1,0 +1,37 @@
+name: Render Video Production V3
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2 libpangocairo-1.0-0 libpango-1.0-0
+          echo '{"dependencies": {"remotion": "4.0.12", "react": "18.2.0", "react-dom": "18.2.0", "@remotion/cli": "4.0.12", "lucide-react": "0.284.0"}}' > package.json
+          npm install
+      - name: Download Assets
+        run: |
+          mkdir -p public src
+          curl -L -o public/audio.mp3 https://share.zapia.com/kx0nx0uuc6dz1bbhr5371i
+          curl -L -o src/StomachAcid_VIRAL.tsx https://share.zapia.com/j8rm6urw29jbvf07v2piui
+      - name: Fix Root.tsx
+        run: |
+          echo "import React from 'react'; import { Composition } from 'remotion'; import { StomachAcidViral } from './StomachAcid_VIRAL'; export const RemotionRoot: React.FC = () => { return ( <Composition id='StomachAcid' component={StomachAcidViral} durationInFrames={2400} fps={60} width={1080} height={1920} /> ); };" > src/Root.tsx
+      - name: Render Video
+        run: npx remotion render StomachAcid out/video.mp4 --overwrite
+      - name: Upload Video
+        uses: actions/upload-artifact@v4
+        with:
+          name: video
+          path: out/video.mp4
