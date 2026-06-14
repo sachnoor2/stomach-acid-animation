@@ -1,0 +1,28 @@
+name: Rebuild from Assets
+on: 
+  workflow_dispatch:
+    inputs:
+      assets_url:
+        description: "URL of the assets.tar.gz"
+        required: true
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download Assets
+        run: |
+          wget -O assets.tar.gz "${{ github.event.inputs.assets_url }}"
+          tar -xvzf assets.tar.gz
+          mkdir -p src public
+          cp stomach_acid_video/Root.tsx src/Root.tsx
+          cp stomach_acid_video/StomachAcidViral.tsx src/StomachAcidViral.tsx
+          cp stomach_acid_video/public/audio.mp3 public/audio.mp3
+      - name: Commit and Push
+        run: |
+          git config --global user.name "Hidict Studio"
+          git config --global user.email "hidict@users.noreply.github.com"
+          git add .
+          git commit -m "Rebuild StomachAcid from shared assets"
+          git push
