@@ -25,6 +25,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg libnss3 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libpangocairo-1.0-0 libpango-1.0-0 git-lfs chromium-browser
+          echo "CHROMIUM_PATH=$(which chromium-browser)" >> $GITHUB_ENV
 
       - name: Clone Hindi TTS Model (LFS)
         run: |
@@ -49,7 +50,7 @@ jobs:
         run: python3 scripts/generate_audio_f5.py
 
       - name: Render Video
-        run: npx remotion render StomachAcid out/video.mp4 --overwrite --browser-executable chromium-browser
+        run: npx remotion render StomachAcid out/video.mp4 --overwrite --browser-executable $CHROMIUM_PATH
 
       - name: Upload Video
         uses: actions/upload-artifact@v4
