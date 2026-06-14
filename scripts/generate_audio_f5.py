@@ -25,16 +25,16 @@ def main():
     print("🎙️ Running F5-TTS Synthesis...")
     
     # We use the F5-TTS CLI for inference
-    # Note: Adjusting parameters for high quality
+    # Note: Corrected argument flags based on CLI help
     cmd = [
         "f5-tts_infer-cli",
-        "--model_path", model_ckpt,
-        "--vocab_path", vocab_file,
-        "--ref_audio", ref_audio,
-        "--ref_text", "क्या आप जानते हैं", # Short segment of the ref audio text
-        "--gen_text", text,
-        "--output_dir", "public/",
-        "--output_file", "audio.mp3" # Overwrite public/audio.mp3
+        "-p", model_ckpt,
+        "-v", vocab_file,
+        "-r", ref_audio,
+        "-s", "क्या आप जानते हैं", # Short segment of the ref audio text
+        "-t", text,
+        "-o", "public/",
+        "-w", "audio.mp3" # Overwrite public/audio.mp3
     ]
     
     try:
